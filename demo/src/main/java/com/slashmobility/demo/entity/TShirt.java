@@ -3,6 +3,8 @@ package com.slashmobility.demo.entity;
 import java.util.Objects;
 import lombok.*;
 
+@Data
+@AllArgsConstructor
 public class TShirt {
   
   private Integer id;
