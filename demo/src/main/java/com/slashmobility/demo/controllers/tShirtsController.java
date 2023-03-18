@@ -1,4 +1,4 @@
-package com.slashmobility.controllers;
+package com.slashmobility.demo.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
