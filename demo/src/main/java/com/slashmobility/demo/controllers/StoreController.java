@@ -12,22 +12,19 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class StoreController {
- 
-//   Stock st=new Stock(1, 100, new Hashtable<Size, Integer>() {{
-//     put(Size.SMALL, 4);
-//     put(Size.MEDIUM, 9);
-//     put(Size.LARGE,0);
-// }});
- @GetMapping("api/store")
-  public List<Stock> store()
- {
-    return getStock();
- }
-private List<Stock> getStock() {
+
+    @GetMapping("api/store")
+      public List<Stock> store()
+    {
+        return getStock();
+    }
+    private List<Stock> getStock() {
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(new FileReader("src/main/java/com/slashmobility/demo/model/store.json"));
@@ -57,7 +54,7 @@ private List<Stock> getStock() {
         }
         return null;
     }
-private static Stock jsonObj2Stock(JSONObject e){
+    private static Stock jsonObj2Stock(JSONObject e){
 
         // getting fields
         Integer id = ((Long)e.get("id")).intValue();
@@ -75,7 +72,7 @@ private static Stock jsonObj2Stock(JSONObject e){
         return st;
     }
 
-@GetMapping("api/tshirt/score-sale/{id}")
+    @GetMapping("api/tshirt/score-sale/{id}")
       public Integer getScoreSales(@PathVariable Integer id)
       {
         Store st = new Store(this.getStock());
@@ -87,9 +84,9 @@ private static Stock jsonObj2Stock(JSONObject e){
         return null;
       };
 
-@GetMapping("api/tshirt/score-stock-ratio/{id}")
- public double getScoreStockRatio (@PathVariable Integer id)
- {
+    @GetMapping("api/tshirt/score-stock-ratio/{id}")
+    public double getScoreStockRatio (@PathVariable Integer id)
+    {
         Store st = new Store(this.getStock());
         Integer sumSizes, total;
         sumSizes=total=0;
@@ -99,7 +96,15 @@ private static Stock jsonObj2Stock(JSONObject e){
                 sumSizes = i.getInventory().values().stream().mapToInt(Integer::intValue).sum();
           }
         return (double)sumSizes/total;
-  };
-      
+    };
+  
+    @PostMapping("api/store/sort")
+    public String sortTShirts (@RequestBody JSONObject body) 
+    {
+        double getScoreSalesWeight  = (double) body.get("getScoreSales");
+        double getScoreStockRatioWeight  = (double) body.get("getScoreStockRatio");
+        int[] result = new int[] {(int)(Math.ceil(getScoreSalesWeight)) + 1, (int)(Math.ceil(getScoreStockRatioWeight)) + 1};
+        return result.toString();
+    }
     
 }
