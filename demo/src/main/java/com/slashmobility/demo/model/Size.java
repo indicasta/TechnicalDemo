@@ -1,4 +1,4 @@
-package com.slashmobility.demo.entity;
+package com.slashmobility.demo.model;
 
 public enum Size {
     SMALL, MEDIUM, LARGE;

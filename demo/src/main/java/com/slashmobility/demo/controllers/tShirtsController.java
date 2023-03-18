@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.slashmobility.demo.entity.TShirt;
+import com.slashmobility.demo.model.TShirt;
 
 @RestController
 public class tShirtsController {
