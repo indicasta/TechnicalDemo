@@ -65,13 +65,11 @@ public class StoreController {
         JSONObject sizes =(JSONObject) e.get("sizes");
 
         Hashtable<Size,Integer> inventory= new Hashtable<Size,Integer>(){{
-           put(Size.SMALL,((Long)sizes.get("SMALL")).intValue());
-            put(Size.MEDIUM,((Long)sizes.get("MEDIUM")).intValue());
-            put(Size.LARGE,((Long)sizes.get("LARGE")).intValue());
+           put(Size.SMALL,((Long)sizes.get("S")).intValue());
+            put(Size.MEDIUM,((Long)sizes.get("M")).intValue());
+            put(Size.LARGE,((Long)sizes.get("L")).intValue());
         }};
         Stock st= new Stock(id, sales, inventory);
-     
-
         return st;
     }
 
@@ -102,9 +100,9 @@ public class StoreController {
     };
 
       @GetMapping("api/tshirt/global-score/{id}")
-      public float globalScore(@PathVariable Integer id){
+      public float globalScore(@PathVariable Integer id, @RequestBody JSONObject body){
         ScoreFunctions[] scoreFunctions= new ScoreFunctions [] {ScoreFunctions.SCORE_SALES, ScoreFunctions.SCORE_RATIO_STOCK};
-       return getGlobalTshirtScore(id,scoreFunctions,new Float [] {0.1F, 0.9F});
+       return getGlobalTshirtScore(id,scoreFunctions,scoreWeights(body));
       }
 
   
@@ -121,13 +119,12 @@ public class StoreController {
 
 
 
-
     @PostMapping("api/store/sort")
-    public float[] scoreWeights (@RequestBody JSONObject body) 
+    public Float[] scoreWeights (@RequestBody JSONObject body) 
     {
-        float getScoreSalesWeight  = (float) body.get("getScoreSales");
-        float getScoreStockRatioWeight  = (float) body.get("getScoreStockRatio");
-        float[] result = new float[] {getScoreSalesWeight, getScoreStockRatioWeight};
+        Float getScoreSalesWeight  = ((Double)body.get("getScoreSales")).floatValue();
+        Float getScoreStockRatioWeight  = ((Double)body.get("getScoreStockRatio")).floatValue();
+        Float[] result = new Float[] {getScoreSalesWeight, getScoreStockRatioWeight};
         return result;
     }
     
