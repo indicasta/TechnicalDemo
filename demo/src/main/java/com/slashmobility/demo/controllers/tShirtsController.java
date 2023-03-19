@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.slashmobility.demo.model.TShirt;
 
 @RestController
-public class tShirtsController {
+public class TShirtsController {
 
     ArrayList<TShirt> tshirts= new ArrayList<>(List.of(
       new TShirt(1, "V-NECK BASIC SHIRT"),

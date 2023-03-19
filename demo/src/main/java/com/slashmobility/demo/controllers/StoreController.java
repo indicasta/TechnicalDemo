@@ -5,6 +5,7 @@ import com.slashmobility.demo.model.ScoreFunctions;
 import com.slashmobility.demo.model.Size;
 import com.slashmobility.demo.model.Stock;
 import com.slashmobility.demo.model.Store;
+import com.slashmobility.demo.model.TShirt;
 
 import java.io.FileReader;
 import java.util.*;
@@ -120,8 +121,13 @@ public class StoreController {
 
 
     @PostMapping("api/store/sort")
+    // public List<TShirt> sort (){}
+
+
+
     public Float[] scoreWeights (@RequestBody JSONObject body) 
     {
+        //read a json object to get weight for each score function
         Float getScoreSalesWeight  = ((Double)body.get("getScoreSales")).floatValue();
         Float getScoreStockRatioWeight  = ((Double)body.get("getScoreStockRatio")).floatValue();
         Float[] result = new Float[] {getScoreSalesWeight, getScoreStockRatioWeight};
