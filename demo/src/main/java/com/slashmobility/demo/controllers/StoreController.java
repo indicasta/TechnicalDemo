@@ -1,11 +1,14 @@
 package com.slashmobility.demo.controllers;
 
+
+import com.slashmobility.demo.model.ScoreFunctions;
 import com.slashmobility.demo.model.Size;
 import com.slashmobility.demo.model.Stock;
 import com.slashmobility.demo.model.Store;
 
 import java.io.FileReader;
 import java.util.*;
+
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,7 +27,7 @@ public class StoreController {
     {
         return getStock();
     }
-    private List<Stock> getStock() {
+    private static List<Stock> getStock() {
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(new FileReader("src/main/java/com/slashmobility/demo/model/store.json"));
@@ -73,21 +76,21 @@ public class StoreController {
     }
 
     @GetMapping("api/tshirt/score-sale/{id}")
-      public Integer getScoreSales(@PathVariable Integer id)
+      public static Float getScoreSales(@PathVariable Integer id)
       {
-        Store st = new Store(this.getStock());
+        Store st = new Store(getStock());
       
         for (Stock i : st.getStock()) {
           if(i.getIdTShirt().equals(id))
-                return i.getSales();
+                return i.getSales().floatValue();
           }
         return null;
       };
 
     @GetMapping("api/tshirt/score-stock-ratio/{id}")
-    public double getScoreStockRatio (@PathVariable Integer id)
+    public static float getScoreStockRatio (@PathVariable Integer id)
     {
-        Store st = new Store(this.getStock());
+        Store st = new Store(getStock());
         Integer sumSizes, total;
         sumSizes=total=0;
         for (Stock i : st.getStock()) {
@@ -95,16 +98,37 @@ public class StoreController {
           if(i.getIdTShirt().equals(id))
                 sumSizes = i.getInventory().values().stream().mapToInt(Integer::intValue).sum();
           }
-        return (double)sumSizes/total;
+        return (float)sumSizes/total;
     };
+
+      @GetMapping("api/tshirt/global-score/{id}")
+      public float globalScore(@PathVariable Integer id){
+        ScoreFunctions[] scoreFunctions= new ScoreFunctions [] {ScoreFunctions.SCORE_SALES, ScoreFunctions.SCORE_RATIO_STOCK};
+       return getGlobalTshirtScore(id,scoreFunctions,new Float [] {0.1F, 0.9F});
+      }
+
   
+     private float getGlobalTshirtScore(Integer id, ScoreFunctions[] scoreFunctions, Float[] scoreWeights)
+      {
+        float score = 0;
+        float sumScoreWeights =0;
+        for (int i = 0; i < scoreFunctions.length; i++) {
+          score += scoreFunctions[i].call(id) * scoreWeights[i];
+          sumScoreWeights += scoreWeights[i];
+        }
+        return (score / sumScoreWeights);
+      };
+
+
+
+
     @PostMapping("api/store/sort")
-    public String sortTShirts (@RequestBody JSONObject body) 
+    public float[] scoreWeights (@RequestBody JSONObject body) 
     {
-        double getScoreSalesWeight  = (double) body.get("getScoreSales");
-        double getScoreStockRatioWeight  = (double) body.get("getScoreStockRatio");
-        int[] result = new int[] {(int)(Math.ceil(getScoreSalesWeight)) + 1, (int)(Math.ceil(getScoreStockRatioWeight)) + 1};
-        return result.toString();
+        float getScoreSalesWeight  = (float) body.get("getScoreSales");
+        float getScoreStockRatioWeight  = (float) body.get("getScoreStockRatio");
+        float[] result = new float[] {getScoreSalesWeight, getScoreStockRatioWeight};
+        return result;
     }
     
 }
