@@ -27,34 +27,6 @@
 			"response": []
 		},
 		{
-			"name": "localhost:8080/api/hello",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Angel\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/api/hello",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"hello"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "http://localhost:8080/api/tshirts/4",
 			"request": {
 				"method": "GET",
@@ -122,6 +94,14 @@
 		},
 		{
 			"name": "localhost:8080/api/tshirt/score-stock-ratio/4",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/api/tshirt/global-score/2",
 			"request": {
 				"method": "GET",
 				"header": []

@@ -41,12 +41,4 @@ public class TShirtsController {
         tshirts.add(t);
     }
 
-    @PostMapping("api/hello")
-    public String sayHello (@RequestBody JSONObject body) 
-    {
-        
-        String name = (String) body.get("name");
-        return "Hola " + name;
-    }
-
-}
+ }
