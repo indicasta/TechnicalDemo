@@ -56,37 +56,12 @@
 			"response": []
 		},
 		{
-			"name": "localhost:8080/api/tshirt/score-sale/1",
+			"name": "localhost:8080/api/tshirt/score/sale/1",
 			"request": {
 				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/api/tshirt/score-stock-ratio/4",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "localhost:8080/api/tshirt/sort-by-global-score",
-			"request": {
-				"method": "POST",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"getScoreSales\": 0.3,\r\n    \"getScoreStockRatio\": 0.7\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
-					"raw": "localhost:8080/api/tshirt/sort-by-global-score",
+					"raw": "localhost:8080/api/tshirt/score/sale/6",
 					"host": [
 						"localhost"
 					],
@@ -94,7 +69,60 @@
 					"path": [
 						"api",
 						"tshirt",
-						"sort-by-global-score"
+						"score",
+						"sale",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/api/tshirt/score/stock-ratio/4",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/tshirt/score/stock-ratio/6",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tshirt",
+						"score",
+						"stock-ratio",
+						"6"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/api/tshirt/sort",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"getScoreSales\": 0.1,\r\n    \"getScoreStockRatio\":0.9\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/tshirt/sort",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"tshirt",
+						"sort"
 					]
 				}
 			},
