@@ -15,7 +15,8 @@ public class DemoApplication
 	}
 
 	@GetMapping("/")
-	public String hello(){
+	public String hello()
+	{
 		return String.format("T-Shirts Order Example!👩🏾‍💻");
 	}
 

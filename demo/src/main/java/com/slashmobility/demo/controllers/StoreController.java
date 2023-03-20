@@ -92,7 +92,9 @@ public class StoreController
                 store.add(jsonObj2Stock(e));
             }
             return store;
-        } catch (Exception e) {
+        }
+        catch (Exception e) 
+        {
             e.printStackTrace();
         }
         return null;
@@ -212,7 +214,7 @@ public class StoreController
       private float getGlobalTshirtScore(Integer id, ScoreFunctions[] scoreFunctions, Float[] scoreWeights)
       {
         float score = 0;
-        float sumScoreWeights =0;
+        float sumScoreWeights = 0;
         for (int i = 0; i < scoreFunctions.length; i++) {
           score += scoreFunctions[i].call(id) * scoreWeights[i];
           sumScoreWeights += scoreWeights[i];
@@ -236,6 +238,7 @@ public class StoreController
          public int compare(Map.Entry<TShirt, Float> o1, Map.Entry<TShirt, Float> o2) {
             return o2.getValue().compareTo(o1.getValue());
         }});
+
         Map<TShirt, Float> mapSortedByValues = new LinkedHashMap<TShirt, Float>();
         //put all sorted entries in LinkedHashMap
         for( Map.Entry<TShirt, Float> entry : score ){
