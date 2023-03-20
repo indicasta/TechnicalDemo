@@ -109,7 +109,6 @@ public class StoreController
         Integer id = ((Long)e.get("id")).intValue();
         Integer sales = ((Long) e.get("sales")).intValue();
         JSONObject sizes =(JSONObject) e.get("sizes");
-
         Hashtable<Size,Integer> inventory= new Hashtable<Size,Integer>(){{
             put(Size.SMALL,((Long)sizes.get("S")).intValue());
             put(Size.MEDIUM,((Long)sizes.get("M")).intValue());
@@ -127,7 +126,6 @@ public class StoreController
       public static Float getScoreSales(@PathVariable Integer id)
       {
         Store st = new Store(getStock());
-      
         for (Stock stock: st.getStock()){
           if(stock.getIdTShirt().equals(id))
                 return stock.getSales().floatValue();
@@ -226,13 +224,13 @@ public class StoreController
        * @param globalScore Hashtable containing the global score of each TShirt.
        * @return A Map of TShirt and Float.
        */
-       public Map<TShirt,Float> sortValue(Hashtable<TShirt,Float> globalScore)
+      public Map<TShirt,Float> sortValue(Hashtable<TShirt,Float> globalScore)
        {
       //Sorting the Hashtable by values containing he global score of the TSHirt as values.
        ArrayList<Map.Entry<TShirt,Float>> score= new ArrayList<Map.Entry<TShirt,Float>> (globalScore.entrySet());
        Collections.sort(score, new Comparator<Map.Entry<TShirt, Float>>(){
 
-         public int compare(Map.Entry<TShirt, Float> o1, Map.Entry<TShirt, Float> o2) {
+        public int compare(Map.Entry<TShirt, Float> o1, Map.Entry<TShirt, Float> o2) {
             return o2.getValue().compareTo(o1.getValue());
         }});
 
@@ -254,11 +252,11 @@ public class StoreController
       */
       public Float[] scoreWeights (@RequestBody JSONObject body) 
       {
-          //read a json object to get weight for each score function
-          Float getScoreSalesWeight  = ((Double)body.get("getScoreSales")).floatValue();
-          Float getScoreStockRatioWeight  = ((Double)body.get("getScoreStockRatio")).floatValue();
-          Float[] result = new Float[] {getScoreSalesWeight, getScoreStockRatioWeight};
-          return result;
+        //read a json object to get weight for each score function
+        Float getScoreSalesWeight  = ((Double)body.get("getScoreSales")).floatValue();
+        Float getScoreStockRatioWeight  = ((Double)body.get("getScoreStockRatio")).floatValue();
+        Float[] result = new Float[] {getScoreSalesWeight, getScoreStockRatioWeight};
+        return result;
       }
     
 }
