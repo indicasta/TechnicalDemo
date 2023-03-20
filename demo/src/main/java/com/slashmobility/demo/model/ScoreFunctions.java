@@ -4,6 +4,11 @@ import java.util.function.Function;
 
 import com.slashmobility.demo.controllers.StoreController;
 
+
+/**
+ * @author IndiCasta🧿
+ */
+
 public enum ScoreFunctions {
     SCORE_SALES(StoreController::getScoreSales),
     SCORE_RATIO_STOCK(StoreController::getScoreSales);

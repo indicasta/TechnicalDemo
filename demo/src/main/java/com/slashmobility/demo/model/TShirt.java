@@ -2,6 +2,11 @@ package com.slashmobility.demo.model;
 
 import lombok.*;
 
+
+/**
+ * @author IndiCasta🧿
+ */
+
 @Data
 @AllArgsConstructor
 public class TShirt {

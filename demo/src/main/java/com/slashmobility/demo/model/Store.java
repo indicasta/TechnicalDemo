@@ -2,6 +2,10 @@ package com.slashmobility.demo.model;
 import java.util.*;
 import lombok.*;
 
+/**
+ * @author IndiCasta🧿
+ */
+
 @Data
 @AllArgsConstructor
 public class Store {
