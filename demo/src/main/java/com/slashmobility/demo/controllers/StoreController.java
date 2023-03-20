@@ -69,14 +69,11 @@ public class StoreController
         return getStock();
     }
     
-    /** 
-     * @return List<Stock> from json file
-     */
     /**
      * It reads the json file to obtain json objects one by one and convert them to stock objects and
      * finally return all in a List
      * 
-     * @return A list of Stock objects.
+     * @return A list of Stock objects. List<Stock> from json file
      */
     private static List<Stock> getStock() 
     {
