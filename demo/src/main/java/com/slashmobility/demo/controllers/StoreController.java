@@ -191,8 +191,8 @@ public class StoreController
         ScoreFunctions[] scoreFunctions= new ScoreFunctions [] {ScoreFunctions.SCORE_SALES, ScoreFunctions.SCORE_RATIO_STOCK};
         Store st = new Store(getStock());
         Hashtable<TShirt,Float> globalScore = new Hashtable<TShirt,Float>(tshirts.size());
-        for (Stock i : st.getStock()) {
-          globalScore.put(getById(i.getIdTShirt()) ,getGlobalTshirtScore(i.getIdTShirt(),scoreFunctions,scoreWeights(body)));
+        for (Stock stock : st.getStock()) {
+          globalScore.put(getById(stock.getIdTShirt()) ,getGlobalTshirtScore(stock.getIdTShirt(),scoreFunctions,scoreWeights(body)));
         }
         return sortValue(globalScore);
       }
