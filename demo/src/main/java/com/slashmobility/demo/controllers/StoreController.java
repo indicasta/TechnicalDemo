@@ -32,11 +32,20 @@ public class StoreController {
       new TShirt(5, "CONTRASTING LACE T-SHIRT"),
       new TShirt(6, "SLOGAN T-SHIRT")
     ));
+    
+    /** 
+     * @return List<TShirt>
+     */
     @GetMapping("api/tshirts")
       public List<TShirt> all()
     {
         return tshirts;
     }
+  
+  /** 
+   * @param id
+   * @return TShirt
+   */
   @GetMapping("api/tshirts/{id}")
     TShirt getById(@PathVariable Integer id) {
       for (TShirt ts : tshirts) {
@@ -46,29 +55,29 @@ public class StoreController {
       return null;
     }
 
+    
+    /** 
+     * @return List<Stock>
+     */
     @GetMapping("api/store")
       public List<Stock> store()
     {
         return getStock();
     }
+    
+    /** 
+     * @return List<Stock> from json file
+     */
     private static List<Stock> getStock() {
+      /*
+      read the json file to obtain json objects one by one and convert them to stock objects and finally
+       return all in a List.
+      */
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(new FileReader("src/main/java/com/slashmobility/demo/model/store.json"));
-
-            // A JSON object. Key value pairs are unordered. JSONObject supports
-            // java.util.Map interface.
             JSONObject jsonObject = (JSONObject) obj;
-
-            // A JSON array. JSONObject supports java.util.List interface.
             JSONArray tshirtStock = (JSONArray) jsonObject.get("store");
-
-            // An iterator over a collection. Iterator takes the place of Enumeration in the
-            // Java Collections Framework.
-            // Iterators differ from enumerations in two ways:
-            // 1. Iterators allow the caller to remove elements from the underlying
-            // collection during the iteration with well-defined semantics.
-            // 2. Method names have been improved.
             Iterator<?> iterator = tshirtStock.iterator();
             ArrayList<Stock> store = new ArrayList<Stock>();
             while (iterator.hasNext()) {
@@ -81,6 +90,11 @@ public class StoreController {
         }
         return null;
     }
+    
+    /** 
+     * @param e: each json object from file
+     * @return Stock
+     */
     private static Stock jsonObj2Stock(JSONObject e){
 
         // getting fields
@@ -89,7 +103,7 @@ public class StoreController {
         JSONObject sizes =(JSONObject) e.get("sizes");
 
         Hashtable<Size,Integer> inventory= new Hashtable<Size,Integer>(){{
-           put(Size.SMALL,((Long)sizes.get("S")).intValue());
+            put(Size.SMALL,((Long)sizes.get("S")).intValue());
             put(Size.MEDIUM,((Long)sizes.get("M")).intValue());
             put(Size.LARGE,((Long)sizes.get("L")).intValue());
         }};
@@ -97,6 +111,11 @@ public class StoreController {
         return st;
     }
 
+    
+    /** 
+     * @param id of TShirt
+     * @return Float containing the sales of specified TShirt
+     */
     @GetMapping("api/tshirt/score-sale/{id}")
       public static Float getScoreSales(@PathVariable Integer id)
       {
@@ -109,6 +128,11 @@ public class StoreController {
         return null;
       };
 
+    
+    /** 
+     * @param id of TShirt
+     * @return float containing the result of adding all sizes available for this TShirt over total amount of sizes in store.
+     */
     @GetMapping("api/tshirt/score-stock-ratio/{id}")
     public static float getScoreStockRatio (@PathVariable Integer id)
     {
@@ -123,6 +147,11 @@ public class StoreController {
         return (float)sumSizes/total;
     };
 
+      
+      /** 
+       * @param body json with weights for score functions
+       * @return Map<TShirt, Float> the ordered list of TShirts by score in descendent mode 
+       */
       @PostMapping("api/tshirt/sort-by-global-score")
       public Map<TShirt,Float> globalScore(@RequestBody JSONObject body){
         //return a hash structure where keys are TShirts and values are corresponding total score. 
@@ -136,6 +165,13 @@ public class StoreController {
         return sortValue(globalScore);
       }
 
+      
+      /** 
+       * @param id
+       * @param scoreFunctions
+       * @param scoreWeights
+       * @return float, the weighted average of score functions
+       */
       private float getGlobalTshirtScore(Integer id, ScoreFunctions[] scoreFunctions, Float[] scoreWeights)
       {
         float score = 0;
@@ -147,9 +183,14 @@ public class StoreController {
         return (score / sumScoreWeights);
       }
 
-       public Map<TShirt,Float> sortValue(Hashtable<TShirt,Float> globalScore){
-
-       //Transfer as List and sort it
+       
+       /** 
+        * @param globalScore
+        * @return Map<TShirt, Float>
+        */
+       public Map<TShirt,Float> sortValue(Hashtable<TShirt,Float> globalScore)
+       {
+      //Sorting the Hashtable by values containing he global score of the TSHirt as values.
        ArrayList<Map.Entry<TShirt,Float>> score= new ArrayList<Map.Entry<TShirt,Float>> (globalScore.entrySet());
        Collections.sort(score, new Comparator<Map.Entry<TShirt, Float>>(){
 
@@ -164,6 +205,11 @@ public class StoreController {
         return mapSortedByValues;
        }
    
+    
+    /** 
+     * @param body json with weights for score funtions
+     * @return Float[]
+     */
     public Float[] scoreWeights (@RequestBody JSONObject body) 
     {
         //read a json object to get weight for each score function
