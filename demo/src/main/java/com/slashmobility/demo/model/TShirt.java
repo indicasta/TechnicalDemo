@@ -1,6 +1,6 @@
 package com.slashmobility.demo.model;
 
-import java.util.Objects;
+
 import lombok.*;
 
 @Data

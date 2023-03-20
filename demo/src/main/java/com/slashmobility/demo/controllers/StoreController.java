@@ -116,7 +116,7 @@ public class StoreController {
      * @param id of TShirt
      * @return Float containing the sales of specified TShirt
      */
-    @GetMapping("api/tshirt/score-sale/{id}")
+    @GetMapping("api/tshirt/score/sale/{id}")
       public static Float getScoreSales(@PathVariable Integer id)
       {
         Store st = new Store(getStock());
@@ -133,7 +133,7 @@ public class StoreController {
      * @param id of TShirt
      * @return float containing the result of adding all sizes available for this TShirt over total amount of sizes in store.
      */
-    @GetMapping("api/tshirt/score-stock-ratio/{id}")
+    @GetMapping("api/tshirt/score/stock-ratio/{id}")
     public static float getScoreStockRatio (@PathVariable Integer id)
     {
         Store st = new Store(getStock());
@@ -150,9 +150,9 @@ public class StoreController {
       
       /** 
        * @param body json with weights for score functions
-       * @return Map<TShirt, Float> the ordered list of TShirts by score in descendent mode 
+       * @return Map<TShirt, Float> the ordered list of TShirts by global score in descendent mode 
        */
-      @PostMapping("api/tshirt/sort-by-global-score")
+      @PostMapping("api/tshirt/sort")
       public Map<TShirt,Float> globalScore(@RequestBody JSONObject body){
         //return a hash structure where keys are TShirts and values are corresponding total score. 
         ScoreFunctions[] scoreFunctions= new ScoreFunctions [] {ScoreFunctions.SCORE_SALES, ScoreFunctions.SCORE_RATIO_STOCK};
