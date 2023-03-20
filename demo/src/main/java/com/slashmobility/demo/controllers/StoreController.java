@@ -1,17 +1,12 @@
 package com.slashmobility.demo.controllers;
 
-
 import com.slashmobility.demo.model.ScoreFunctions;
 import com.slashmobility.demo.model.Size;
 import com.slashmobility.demo.model.Stock;
 import com.slashmobility.demo.model.Store;
 import com.slashmobility.demo.model.TShirt;
-
-
 import java.io.FileReader;
 import java.util.*;
-
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -21,13 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author IndiCasta🧿
  */
 
 @RestController
-public class StoreController {
+public class StoreController
+{
 
    // Creating an array of TShirt objects.
     ArrayList<TShirt> tshirts= new ArrayList<>(List.of(
@@ -47,8 +42,7 @@ public class StoreController {
     {
         return tshirts;
     }
-  
-  
+    
   /**
    * If the id of the tshirt in the array matches the id passed in, return the tshirt, otherwise return
    * null.
@@ -57,7 +51,8 @@ public class StoreController {
    * @return A TShirt object
    */
   @GetMapping("api/tshirts/{id}")
-    TShirt getById(@PathVariable Integer id) {
+    TShirt getById(@PathVariable Integer id) 
+    {
       for (TShirt ts : tshirts) {
         if(ts.getId().equals(id))
               return ts;
@@ -65,7 +60,6 @@ public class StoreController {
       return null;
     }
 
-    
     /** 
      * @return List<Stock>
      */
@@ -84,8 +78,8 @@ public class StoreController {
      * 
      * @return A list of Stock objects.
      */
-    private static List<Stock> getStock() {
-      
+    private static List<Stock> getStock() 
+    {
         JSONParser parser = new JSONParser();
         try {
             Object obj = parser.parse(new FileReader("src/main/java/com/slashmobility/demo/model/store.json"));
@@ -104,15 +98,14 @@ public class StoreController {
         return null;
     }
     
-    
-   /**
+    /**
     * It takes a JSONObject and returns a Stock object
     * 
     * @param e JSONObject
     * @return A Stock
     */
-    private static Stock jsonObj2Stock(JSONObject e){
-
+    private static Stock jsonObj2Stock(JSONObject e)
+     {
         // getting fields
         Integer id = ((Long)e.get("id")).intValue();
         Integer sales = ((Long) e.get("sales")).intValue();
@@ -126,8 +119,7 @@ public class StoreController {
         Stock st= new Stock(id, sales, inventory);
         return st;
     }
-
-    
+   
     /** 
      * @param id of TShirt
      * @return Float containing the sales of specified TShirt
@@ -137,9 +129,9 @@ public class StoreController {
       {
         Store st = new Store(getStock());
       
-        for (Stock i : st.getStock()) {
-          if(i.getIdTShirt().equals(id))
-                return i.getSales().floatValue();
+        for (Stock stock: st.getStock()){
+          if(stock.getIdTShirt().equals(id))
+                return stock.getSales().floatValue();
           }
         return null;
       };
@@ -157,15 +149,14 @@ public class StoreController {
         Store st = new Store(getStock());
         Integer sumSizes, total;
         sumSizes=total=0;
-        for (Stock i : st.getStock()) {
-          total += i.getInventory().values().stream().mapToInt(Integer::intValue).sum();
-          if(i.getIdTShirt().equals(id))
-                sumSizes = i.getInventory().values().stream().mapToInt(Integer::intValue).sum();
+        for (Stock stock: st.getStock()) {
+          total += stock.getInventory().values().stream().mapToInt(Integer::intValue).sum();
+          if(stock.getIdTShirt().equals(id))
+                sumSizes = stock.getInventory().values().stream().mapToInt(Integer::intValue).sum();
           }
         return (float)sumSizes/total;
     };
-
-      
+     
       /** 
        * @param body json with weights for score functions
        * @return Map<TShirt, Float> the ordered list of TShirts by global score in descendent mode 
@@ -197,7 +188,8 @@ public class StoreController {
       * @return A map of TShirt and Float.
       */
       @PostMapping("api/tshirt/sort")
-      public Map<TShirt,Float> globalScore(@RequestBody JSONObject body){
+      public Map<TShirt,Float> globalScore(@RequestBody JSONObject body) 
+      {
         //return a hash structure where keys are TShirts and values are corresponding total score. 
         ScoreFunctions[] scoreFunctions= new ScoreFunctions [] {ScoreFunctions.SCORE_SALES, ScoreFunctions.SCORE_RATIO_STOCK};
         Store st = new Store(getStock());
@@ -205,17 +197,9 @@ public class StoreController {
         for (Stock i : st.getStock()) {
           globalScore.put(getById(i.getIdTShirt()) ,getGlobalTshirtScore(i.getIdTShirt(),scoreFunctions,scoreWeights(body)));
         }
-        
         return sortValue(globalScore);
       }
 
-      
-      /** 
-       * @param id
-       * @param scoreFunctions
-       * @param scoreWeights
-       * @return float, the weighted average of score functions
-       */
       /**
        * > This function takes an id, an array of functions, and an array of weights, and returns the
        * weighted average of the results of the functions
@@ -236,8 +220,7 @@ public class StoreController {
         return (score / sumScoreWeights);
       }
 
-       
-      /**
+       /**
        * // Java
        * public Map<TShirt,Float> sortValue(Hashtable<TShirt,Float> globalScore)
        * 
@@ -261,21 +244,21 @@ public class StoreController {
         return mapSortedByValues;
        }
    
-   /**
-    * This function takes in a JSON object, reads the values of the two keys, and returns an array of
-    * floats
-    * 
-    * @param body the JSON object that contains the weight for each score function
-    * @return A JSON object with two keys, getScoreSales and getScoreStockRatio, and their
-    * corresponding values.
-    */
-    public Float[] scoreWeights (@RequestBody JSONObject body) 
-    {
-        //read a json object to get weight for each score function
-        Float getScoreSalesWeight  = ((Double)body.get("getScoreSales")).floatValue();
-        Float getScoreStockRatioWeight  = ((Double)body.get("getScoreStockRatio")).floatValue();
-        Float[] result = new Float[] {getScoreSalesWeight, getScoreStockRatioWeight};
-        return result;
-    }
+    /**
+      * This function takes in a JSON object, reads the values of the two keys, and returns an array of
+      * floats
+      * 
+      * @param body the JSON object that contains the weight for each score function
+      * @return A JSON object with two keys, getScoreSales and getScoreStockRatio, and their
+      * corresponding values.
+      */
+      public Float[] scoreWeights (@RequestBody JSONObject body) 
+      {
+          //read a json object to get weight for each score function
+          Float getScoreSalesWeight  = ((Double)body.get("getScoreSales")).floatValue();
+          Float getScoreStockRatioWeight  = ((Double)body.get("getScoreStockRatio")).floatValue();
+          Float[] result = new Float[] {getScoreSalesWeight, getScoreStockRatioWeight};
+          return result;
+      }
     
 }
