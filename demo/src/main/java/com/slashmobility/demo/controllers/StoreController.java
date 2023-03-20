@@ -7,6 +7,7 @@ import com.slashmobility.demo.model.Stock;
 import com.slashmobility.demo.model.Store;
 import com.slashmobility.demo.model.TShirt;
 
+
 import java.io.FileReader;
 import java.util.*;
 
@@ -22,6 +23,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class StoreController {
+
+    ArrayList<TShirt> tshirts= new ArrayList<>(List.of(
+      new TShirt(1, "V-NECK BASIC SHIRT"),
+      new TShirt(2, "CONTRASTING FABRIC-SHIRT"),
+      new TShirt(3, "RAISED PRINT T-SHIRT"),
+      new TShirt(4, "PLEATED T-SHIRT"),
+      new TShirt(5, "CONTRASTING LACE T-SHIRT"),
+      new TShirt(6, "SLOGAN T-SHIRT")
+    ));
+    @GetMapping("api/tshirts")
+      public List<TShirt> all()
+    {
+        return tshirts;
+    }
+  @GetMapping("api/tshirts/{id}")
+    TShirt getById(@PathVariable Integer id) {
+      for (TShirt ts : tshirts) {
+        if(ts.getId().equals(id))
+              return ts;
+        }
+      return null;
+    }
 
     @GetMapping("api/store")
       public List<Stock> store()
@@ -100,14 +123,20 @@ public class StoreController {
         return (float)sumSizes/total;
     };
 
-      @GetMapping("api/tshirt/global-score/{id}")
-      public float globalScore(@PathVariable Integer id, @RequestBody JSONObject body){
+      @PostMapping("api/tshirt/sort-by-global-score")
+      public Map<TShirt,Float> globalScore(@RequestBody JSONObject body){
+        //return a hash structure where keys are TShirts and values are corresponding total score. 
         ScoreFunctions[] scoreFunctions= new ScoreFunctions [] {ScoreFunctions.SCORE_SALES, ScoreFunctions.SCORE_RATIO_STOCK};
-       return getGlobalTshirtScore(id,scoreFunctions,scoreWeights(body));
+        Store st = new Store(getStock());
+        Hashtable<TShirt,Float> globalScore = new Hashtable<TShirt,Float>(tshirts.size());
+        for (Stock i : st.getStock()) {
+          globalScore.put(getById(i.getIdTShirt()) ,getGlobalTshirtScore(i.getIdTShirt(),scoreFunctions,scoreWeights(body)));
+        }
+        
+        return sortValue(globalScore);
       }
 
-  
-     private float getGlobalTshirtScore(Integer id, ScoreFunctions[] scoreFunctions, Float[] scoreWeights)
+      private float getGlobalTshirtScore(Integer id, ScoreFunctions[] scoreFunctions, Float[] scoreWeights)
       {
         float score = 0;
         float sumScoreWeights =0;
@@ -116,15 +145,25 @@ public class StoreController {
           sumScoreWeights += scoreWeights[i];
         }
         return (score / sumScoreWeights);
-      };
+      }
 
+       public Map<TShirt,Float> sortValue(Hashtable<TShirt,Float> globalScore){
 
+       //Transfer as List and sort it
+       ArrayList<Map.Entry<TShirt,Float>> score= new ArrayList<Map.Entry<TShirt,Float>> (globalScore.entrySet());
+       Collections.sort(score, new Comparator<Map.Entry<TShirt, Float>>(){
 
-    @PostMapping("api/store/sort")
-    // public List<TShirt> sort (){}
-
-
-
+         public int compare(Map.Entry<TShirt, Float> o1, Map.Entry<TShirt, Float> o2) {
+            return o2.getValue().compareTo(o1.getValue());
+        }});
+        Map<TShirt, Float> mapSortedByValues = new LinkedHashMap<TShirt, Float>();
+        //put all sorted entries in LinkedHashMap
+        for( Map.Entry<TShirt, Float> entry : score ){
+            mapSortedByValues.put(entry.getKey(), entry.getValue());
+        }
+        return mapSortedByValues;
+       }
+   
     public Float[] scoreWeights (@RequestBody JSONObject body) 
     {
         //read a json object to get weight for each score function
