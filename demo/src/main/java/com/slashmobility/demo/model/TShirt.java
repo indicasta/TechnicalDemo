@@ -11,6 +11,7 @@ public class TShirt {
   
   
   @Override
+  // Overriding the toString method of the Object class.
   public String toString() {
     return "TShirt{" + "id=" + this.id + ", name='" + this.name +  '}';
   }
